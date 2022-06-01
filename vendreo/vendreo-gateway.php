@@ -102,7 +102,7 @@ function vendreo_init_gateway_class() {
                     'title'       => 'Description',
                     'type'        => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
-                    'default'     => 'Pay with your credit card via our super-cool payment gateway.',
+                    'default'     => 'Pay directly from your banking app.',
                 ),
                 'testmode' => array(
                     'title'       => 'Test mode',
@@ -181,7 +181,7 @@ function vendreo_init_gateway_class() {
                 'amount' => ($order->get_total() * 100),
                 'country_code' => 'GB',
                 'currency' => 'GBP',
-                "description" => "Product Description",
+                "description" => "Order #{$order_id}",
                 'payment_type' => 'single',
                 "redirect_url" => $this->get_return_url($order),
                 "reference_id" => $order_id,
