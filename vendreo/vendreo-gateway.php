@@ -33,9 +33,9 @@ function vendreo_init_gateway_class() {
         public function __construct() {
 
             $this->id = 'vendreo'; // payment gateway plugin ID
-            $this->icon = ''; // URL of the icon that will be displayed on checkout page near your gateway name
+            $this->icon = 'https://app.vendreo.com/images/logo_trim.png'; // URL of the icon that will be displayed on checkout page near your gateway name
             $this->has_fields = true; // in case you need a custom credit card form
-            $this->method_title = 'Vendreo Gateway';
+            $this->method_title = 'Fast Bank Transfer (Vendreo)';
             $this->method_description = 'Description of Vendreo payment gateway'; // will be displayed on the options page
 
             // gateways can support subscriptions, refunds, saved payment methods,
@@ -95,7 +95,7 @@ function vendreo_init_gateway_class() {
                     'title'       => 'Title',
                     'type'        => 'text',
                     'description' => 'This controls the title which the user sees during checkout.',
-                    'default'     => 'Vendreo',
+                    'default'     => 'Fast Bank Transfer (Vendreo)',
                     'desc_tip'    => true,
                 ),
                 'description' => array(
