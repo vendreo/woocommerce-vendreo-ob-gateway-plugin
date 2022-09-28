@@ -1,11 +1,11 @@
 <?php
 /*
  * Plugin Name: WooCommerce Vendreo Payment Gateway
- * Plugin URI: https://docs.vendreo.com
+ * Plugin URI: https://github.com/vendreo/wordpress-vendreo-payment-gateway
  * Description: Take Vendreo payments on your store.
  * Author: Vendreo
  * Author URI: https://app.vendreo.com
- * Version: 1.0.0
+ * Version: 1.0.3
  */
 
 /*
@@ -13,7 +13,8 @@
  */
 add_filter( 'woocommerce_payment_gateways', 'vendreo_add_gateway_class' );
 function vendreo_add_gateway_class( $gateways ) {
-    $gateways[] = 'WC_Vendreo_Gateway'; // your class name is here
+    $gateways[] = 'WC_Vendreo_Gateway';
+
     return $gateways;
 }
 
@@ -22,29 +23,20 @@ function vendreo_add_gateway_class( $gateways ) {
  */
 add_action( 'plugins_loaded', 'vendreo_init_gateway_class' );
 
-
 function vendreo_init_gateway_class() {
-
     class WC_Vendreo_Gateway extends WC_Payment_Gateway {
-
-        /**
-         * Class constructor, more about it in Step 3
-         */
         public function __construct() {
 
-            $this->id = 'vendreo'; // payment gateway plugin ID
-            $this->icon = 'https://app.vendreo.com/images/logo_trim.png'; // URL of the icon that will be displayed on checkout page near your gateway name
+            $this->id = 'vendreo'; // plugin ID
+            $this->icon = 'https://app.vendreo.com/images/logo_trim.png'; // checkout page icon
             $this->has_fields = true; // in case you need a custom credit card form
             $this->method_title = 'Fast Bank Transfer (Vendreo)';
-            $this->method_description = 'Description of Vendreo payment gateway'; // will be displayed on the options page
+            $this->method_description = 'Accept payments via bank transfer using Vendreo`\s Payment Gateway';
 
-            // gateways can support subscriptions, refunds, saved payment methods,
-            // but in this tutorial we begin with simple payments
             $this->supports = array(
                 'products'
             );
 
-            // Method with all the options fields
             $this->init_form_fields();
 
             // Load the settings.
@@ -60,22 +52,10 @@ function vendreo_init_gateway_class() {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
             //Callback API Handle
-
             add_action( 'woocommerce_api_wc_vendreo_gateway', array( $this, 'callback_handler' ) );
-
-
-            //add_action( 'woocommerce_thankyou_order_received_text', array($this, 'thankyou_page') );
-
-
-            //add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'check_response'  ));
 
             // We need custom JavaScript to obtain a token
             add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
-
-            //add_action( 'woocommerce_api_vendreo', array( $this, 'webhook'));
-            //add_action( 'woocommerce_api_wc_vendreo', array( $this, 'webhook' ) );
-
-
         }
 
         /**
@@ -129,52 +109,37 @@ function vendreo_init_gateway_class() {
                     'type'        => 'password'
                 )
             );
-
         }
 
         /**
-         * You will need it if you want your custom credit card form, Step 4 is about it
+         * For use with custom credit card form.
          */
         public function payment_fields() {
-
-            //...
-
         }
 
-        /*
+        /**
          * Custom CSS and JS, in most cases required only when you decided to go with a custom credit card form
          */
         public function payment_scripts() {
-
-            //...
-
         }
 
 
-        /*
+        /**
           * Fields validation, more in Step 5
          */
         public function validate_fields() {
 
-            //...
-
         }
 
-        /*
+        /**
          * We're processing the payments here, everything about it is in Step 5
          */
         public function process_payment( $order_id ) {
             global $woocommerce;
 
-
-            // we need it to get any order detailes
             $order = wc_get_order( $order_id );
 
-            // Mark as on-hold (we're awaiting the payment)
             $order->update_status( 'pending-payment', __( 'Awaiting Vendreo Payment', 'wc-gateway-vendreo' ) );
-
-            // Remove cart
-            WC()->cart->empty_cart();
 
             $post = [
                 'application_key' => $this->application_key,
@@ -185,6 +150,7 @@ function vendreo_init_gateway_class() {
                 'payment_type' => 'single',
                 "redirect_url" => $this->get_return_url($order),
                 "reference_id" => $order_id,
+                "basket" => json_encode($this->get_basket_details()),
             ];
 
             header('Content-Type: application/json'); // Specify the type of data
@@ -201,17 +167,37 @@ function vendreo_init_gateway_class() {
             $result = curl_exec($ch); // Execute the cURL statement
             curl_close($ch); // Close the cURL connection
 
+            if(!$result){
+                return false;
+            }
+
             $result = json_decode($result);
+
+            WC()->cart->empty_cart();
 
             return array(
                 'result'    => 'success',
                 'redirect'  => $result->redirect_url
             );
-
-
-
         }
 
+        public function get_basket_details()
+        {
+            $basket = [];
+
+            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+                $product = $cart_item['data'];
+
+                $basket[] = [
+                    'description' => $product->get_name(),
+                    'quantity' => $cart_item['quantity'],
+                    'price' => number_format($product->get_price(),2),
+                    'total' => number_format($cart_item['quantity'] * $product->get_price(), 2),
+                ];
+            }
+
+            return ['items' => $basket];
+        }
 
         public function callback_handler()
         {
