@@ -17,7 +17,7 @@ To install Vendreo Payment Gateway, you need:
 * PHP Version 8.0 or newer
 
 ### Instructions, Setup and Configuration
-
+ 
 For instructions, setup and configuration information please refer to the WooCommerce Integration page in your Vendreo Admin.
 
 ### Changelog
