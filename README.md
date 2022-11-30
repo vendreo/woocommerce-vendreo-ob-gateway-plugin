@@ -30,7 +30,7 @@ For instructions, setup and configuration information please refer to the WooCom
 #### Added
 - File `LICENSE.txt`.
 - Doc blocks to `vendreo-gateway.php` to help improve code readability.
-- Class variables to make code more explicit.
+- Class variables to make code more explicit within `vendreo-gateway.php` file.
 - Changed `vendreo-gateway.php` file by adding `basket_items` key to POST data (using data from the new `get_basket_details()` method).
 
 #### Changed
@@ -40,7 +40,7 @@ For instructions, setup and configuration information please refer to the WooCom
 - Altered Curl request in `vendreo-gateway.php` file to match new API endpoint requirements.
 
 #### Removed
-- Unnecessary comments and spacing in `vendreo-gateway.php` file.
+- Unnecessary comments and spacing in the `vendreo-gateway.php` file.
 
 
 ### [1.0.2] - 15-06-2022
@@ -49,13 +49,13 @@ For instructions, setup and configuration information please refer to the WooCom
 - relocated `vendreo-gateway.php` to root of project.
 
 #### Removed
-- `vendreo` folder as it was no longer required.
+- `vendreo` folder from root of project as it was no longer required.
 
 
 ### [1.0.1] - 15-06-2022
 
 #### Changed
-- Appended title to `README.md` file.
+- Appended project title to the `README.md` file.
 
 #### Removed
 - `vendreo.zip` file, as no longer required.
@@ -64,6 +64,6 @@ For instructions, setup and configuration information please refer to the WooCom
 ### [1.0.0] - 14-06-2022
 
 #### Added
-- `vendreo.zip` file containing project.
+- `vendreo.zip` file containing compressed version of the entire project.
 - `vendreo` folder to hold the main files.
-- `vendreo-gateway.php` main script to carry out grunt work.
+- `vendreo-gateway.php` main plugin script.
