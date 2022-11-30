@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/vendreo/wordpress-vendreo-payment-gateway
  * Description: Take Vendreo payments on your store.
  * Author: Vendreo
- * Author URI: https://app.vendreo.com
+ * Author URI: https://vendreo.com
  * Version: 1.0.3
  */
 
