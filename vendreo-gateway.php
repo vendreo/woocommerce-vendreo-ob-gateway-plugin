@@ -30,6 +30,71 @@ function vendreo_init_gateway_class()
 {
     class WC_Vendreo_Gateway extends WC_Payment_Gateway
     {
+        /**
+         * @var string
+         */
+        private $id;
+
+        /**
+         * @var string
+         */
+        private $icon;
+
+        /**
+         * @var bool
+         */
+        private $has_fields;
+
+        /**
+         * @var string
+         */
+        private $method_title;
+
+        /**
+         * @var string
+         */
+        private $method_description;
+
+        /**
+         * @var string[]
+         */
+        private $supports;
+
+        /**
+         * @var string
+         */
+        private $title;
+
+        /**
+         * @var string
+         */
+        private $description;
+
+        /**
+         * @var bool
+         */
+        private $enabled;
+
+        /**
+         * @var bool
+         */
+        private $testmode;
+
+        /**
+         * @var string
+         */
+        private $application_key;
+
+        /**
+         * @var string
+         */
+        private $secret_key;
+
+        /**
+         * @var array
+         */
+        private $form_fields;
+
         public function __construct()
         {
             $this->id = 'vendreo';
@@ -38,9 +103,7 @@ function vendreo_init_gateway_class()
             $this->method_title = 'Fast Bank Transfer (Vendreo)';
             $this->method_description = 'Accept payments via bank transfer using Vendreo\'s Payment Gateway';
 
-            $this->supports = array(
-                'products'
-            );
+            $this->supports = ['products'];
 
             $this->init_form_fields();
 
@@ -52,9 +115,9 @@ function vendreo_init_gateway_class()
             $this->application_key = $this->testmode ? $this->get_option('test_application_key') : $this->get_option('application_key');
             $this->secret_key = $this->testmode ? $this->get_option('test_secret_key') : $this->get_option('secret_key');
 
-            add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
-            add_action('woocommerce_api_wc_vendreo_gateway', array($this, 'callback_handler'));
-            add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
+            add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+            add_action('woocommerce_api_wc_vendreo_gateway', [$this, 'callback_handler']);
+            add_action('wp_enqueue_scripts', [$this, 'payment_scripts']);
         }
 
         /**
@@ -64,52 +127,52 @@ function vendreo_init_gateway_class()
          */
         public function init_form_fields()
         {
-            $this->form_fields = array(
-                'enabled' => array(
+            $this->form_fields = [
+                'enabled' => [
                     'title' => 'Enable/Disable',
                     'label' => 'Enable Vendreo Gateway',
                     'type' => 'checkbox',
                     'description' => '',
                     'default' => 'no'
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'title' => 'Title',
                     'type' => 'text',
                     'description' => 'This controls the title which the user sees during checkout.',
                     'default' => 'Fast Bank Transfer (Vendreo)',
                     'desc_tip' => true,
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'title' => 'Description',
                     'type' => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
                     'default' => 'Pay directly from your banking app.',
-                ),
-                'testmode' => array(
+                ],
+                'testmode' => [
                     'title' => 'Test mode',
                     'label' => 'Enable Test Mode',
                     'type' => 'checkbox',
                     'description' => 'Place the payment gateway in test mode using test API keys.',
                     'default' => 'yes',
                     'desc_tip' => true,
-                ),
-                'test_application_key' => array(
+                ],
+                'test_application_key' => [
                     'title' => 'Test Application Key',
                     'type' => 'text'
-                ),
-                'test_secret_key' => array(
+                ],
+                'test_secret_key' => [
                     'title' => 'Test Secret Key',
                     'type' => 'password',
-                ),
-                'application_key' => array(
+                ],
+                'application_key' => [
                     'title' => 'Live Application Key',
                     'type' => 'text'
-                ),
-                'secret_key' => array(
+                ],
+                'secret_key' => [
                     'title' => 'Live Secret Key',
                     'type' => 'password'
-                )
-            );
+                ],
+            ];
         }
 
         /**
@@ -161,7 +224,7 @@ function vendreo_init_gateway_class()
             $ch = curl_init('https://api.vendreo.com/v1/request-payment');
             $post = json_encode($post);
             $authorization = "Authorization: Bearer " . $this->secret_key;
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', $authorization]);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
@@ -179,10 +242,10 @@ function vendreo_init_gateway_class()
 
             WC()->cart->empty_cart();
 
-            return array(
+            return [
                 'result' => 'success',
                 'redirect' => $result->redirect_url
-            );
+            ];
         }
 
         /**
@@ -190,7 +253,7 @@ function vendreo_init_gateway_class()
          *
          * @return array[]
          */
-        public function get_basket_details()
+        public function get_basket_details(): array
         {
             $basket = [];
 
@@ -217,6 +280,7 @@ function vendreo_init_gateway_class()
             $data = json_decode($json);
 
             $order = wc_get_order($data->reference_id);
+
             if ($data->act == 'payment_completed') {
                 $order->payment_complete();
                 wc_reduce_stock_levels($order->get_id());
@@ -260,10 +324,14 @@ function vendreo_init_gateway_class()
         $namespace = 'vendreo/v1';
         $route = 'postback';
 
-        register_rest_route($namespace, $route, array(
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => 'at_rest_testing_endpoint'
-        ));
+        register_rest_route(
+            $namespace,
+            $route,
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => 'at_rest_testing_endpoint'
+            ]
+        );
     }
 
     add_action('rest_api_init', 'at_rest_init');
