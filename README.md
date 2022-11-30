@@ -21,20 +21,49 @@ To install Vendreo Payment Gateway, you need:
  
 For instructions, setup and configuration information please refer to the WooCommerce Integration page in your Vendreo Admin.
 
-### Changelog
+---
 
-#### 1.0.3
-* Added - Itemised basket on checkout request.
-* Enhancement - Code clean up.
-* Enhancement - Readme.md.
-* Fix - Clearing of basket on failed checkout request.
+## Changelog
 
-#### 1.0.2
-* Fix - Removed `vendreo` folder as it was not required.
+### [1.0.3] - 01-12-2022
 
-#### 1.0.1
-* Fix - Add Readme.md file.
-* Fix - Removal of `vendreo.zip` file.
+#### Added
+- File `LICENSE.txt`.
+- Doc blocks to `vendreo-gateway.php` to help improve code readability.
+- Class variables to make code more explicit.
+- Changed `vendreo-gateway.php` file by adding `basket_items` key to POST data (using data from the new `get_basket_details()` method).
 
-#### 1.0.0
-* Initial release.
+#### Changed
+- `README.md` updated to contain useful project information such as dependency versions, instructional and the Changelog.
+- Updated clearing of basket to be applied only upon successful checkout in `vendreo-gateway.php` file.
+- Converted `array()` calls to`[]` in `vendreo-gateway.php` file.
+- Altered Curl request in `vendreo-gateway.php` file to match new API endpoint requirements.
+
+#### Removed
+- Unnecessary comments and spacing in `vendreo-gateway.php` file.
+
+
+### [1.0.2] - 15-06-2022
+
+#### Changed
+- relocated `vendreo-gateway.php` to root of project.
+
+#### Removed
+- `vendreo` folder as it was no longer required.
+
+
+### [1.0.1] - 15-06-2022
+
+#### Changed
+- Appended title to `README.md` file.
+
+#### Removed
+- `vendreo.zip` file, as no longer required.
+
+
+### [1.0.0] - 14-06-2022
+
+#### Added
+- `vendreo.zip` file containing project.
+- `vendreo` folder to hold the main files.
+- `vendreo-gateway.php` main script to carry out grunt work.
