@@ -11,15 +11,15 @@ Vendreo's latest payment solution. Accept online payments in your WooCommerce st
 
 ### Requirements
 
-To install Vendreo Payment Gateway, you need:
+To install the Vendreo Payment Gateway plugin, you need:
 
-* WordPress Version 6.1.1 or newer (installed)
-* WooCommerce Version 6.9 or newer (installed and activated)
-* PHP Version 7.2 or newer
+* WordPress Version 6.1.1 or newer (installed).
+* WooCommerce Version 6.9 or newer (installed and activated).
+* PHP Version 7.2 or newer.
 
 ### Instructions, Setup and Configuration
  
-For instructions, setup and configuration information please refer to the WooCommerce Integration page in your Vendreo Admin.
+For instructions, setup and configuration information please refer to the WooCommerce Integration guide in your Vendreo Admin area.
 
 ---
 
