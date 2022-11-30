@@ -9,6 +9,7 @@
  */
 
 add_filter('woocommerce_payment_gateways', 'vendreo_add_gateway_class');
+add_action('plugins_loaded', 'vendreo_init_gateway_class');
 
 /**
  * @param $gateways
@@ -20,8 +21,6 @@ function vendreo_add_gateway_class($gateways)
 
     return $gateways;
 }
-
-add_action('plugins_loaded', 'vendreo_init_gateway_class');
 
 /**
  * @return void
