@@ -33,67 +33,67 @@ function vendreo_init_gateway_class()
         /**
          * @var string
          */
-        private $id;
+        public $id;
 
         /**
          * @var string
          */
-        private $icon;
+        public $icon;
 
         /**
          * @var bool
          */
-        private $has_fields;
+        public $has_fields;
 
         /**
          * @var string
          */
-        private $method_title;
+        public $method_title;
 
         /**
          * @var string
          */
-        private $method_description;
+        public $method_description;
 
         /**
          * @var string[]
          */
-        private $supports;
+        public $supports;
 
         /**
          * @var string
          */
-        private $title;
+        public $title;
 
         /**
          * @var string
          */
-        private $description;
+        public $description;
 
         /**
          * @var bool
          */
-        private $enabled;
+        public $enabled;
 
         /**
          * @var bool
          */
-        private $testmode;
+        public $testmode;
 
         /**
          * @var string
          */
-        private $application_key;
+        public $application_key;
 
         /**
          * @var string
          */
-        private $secret_key;
+        public $secret_key;
 
         /**
          * @var array
          */
-        private $form_fields;
+        public $form_fields;
 
         public function __construct()
         {
@@ -210,24 +210,23 @@ function vendreo_init_gateway_class()
 
             $post = [
                 'application_key' => $this->application_key,
-                'amount' => ($order->get_total() * 100),
+                'amount' => (int)($order->get_total() * 100),
                 'country_code' => 'GB',
                 'currency' => 'GBP',
                 "description" => "Order #{$order_id}",
                 'payment_type' => 'single',
                 "redirect_url" => $this->get_return_url($order),
                 "reference_id" => $order_id,
-                "basket" => json_encode($this->get_basket_details()),
+                "basket_items" => $this->get_basket_details(),
             ];
 
             header('Content-Type: application/json');
             $ch = curl_init('https://api.vendreo.com/v1/request-payment');
-            $post = json_encode($post);
             $authorization = "Authorization: Bearer " . $this->secret_key;
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', $authorization]);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json','Accept: application/json', $authorization]);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -263,12 +262,12 @@ function vendreo_init_gateway_class()
                 $basket[] = [
                     'description' => $product->get_name(),
                     'quantity' => $cart_item['quantity'],
-                    'price' => number_format($product->get_price(), 2),
-                    'total' => number_format($cart_item['quantity'] * $product->get_price(), 2),
+                    'price' => (int) ($product->get_price() * 100),
+                    'total' => (int)(($product->get_price() * 100) * $cart_item['quantity']),
                 ];
             }
 
-            return ['basket_items' => $basket];
+            return $basket;
         }
 
         /**
