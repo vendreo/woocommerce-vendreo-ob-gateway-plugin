@@ -24,6 +24,7 @@ For instructions, setup and configuration information please refer to the WooCom
 ---
 
 ## Changelog
+As documented here [Keep A Change Log](https://keepachangelog.com/en/1.0.0/).
 
 ### [1.0.3] - 01-12-2022
 
