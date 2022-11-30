@@ -1,8 +1,9 @@
 # WordPress Vendreo Payment Gateway
 
-![PHP 8.0](https://img.shields.io/badge/PHP-8.0-blue.svg)
-![Wordpress](https://img.shields.io/badge/wordpress-v6.0-green)
-![woocommerce](https://img.shields.io/badge/woocommerce-v6.6-green)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![PHP 7.2](https://img.shields.io/badge/PHP-7.2-blue.svg)
+![Wordpress](https://img.shields.io/badge/wordpress-v6.1.1-green)
+![woocommerce](https://img.shields.io/badge/woocommerce-v6.9-green)
 
 
 ### Description
@@ -12,9 +13,9 @@ Vendreo's latest payment solution. Accept online payments in your WooCommerce st
 
 To install Vendreo Payment Gateway, you need:
 
-* WordPress Version 6.0 or newer (installed)
-* WooCommerce Version 6.6 or newer (installed and activated)
-* PHP Version 8.0 or newer
+* WordPress Version 6.1.1 or newer (installed)
+* WooCommerce Version 6.9 or newer (installed and activated)
+* PHP Version 7.2 or newer
 
 ### Instructions, Setup and Configuration
  
