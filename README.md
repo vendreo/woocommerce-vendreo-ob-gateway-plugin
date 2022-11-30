@@ -1,4 +1,4 @@
-# WordPress Vendreo Payment Gateway
+# WooCommerce Vendreo Payment Gateway Plugin
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![PHP 7.2](https://img.shields.io/badge/PHP-7.2-blue.svg)

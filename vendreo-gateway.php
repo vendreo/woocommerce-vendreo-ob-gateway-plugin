@@ -1,7 +1,7 @@
 <?php
 /*
- * Plugin Name: WordPress Vendreo Payment Gateway
- * Plugin URI: https://github.com/vendreo/wordpress-vendreo-payment-gateway
+ * Plugin Name: WooCommerce Vendreo Payment Gateway Plugin
+ * Plugin URI: https://github.com/vendreo/woocommerce-vendreo-payment-gateway-plugin
  * Description: Take Vendreo payments on your store.
  * Author: Vendreo
  * Author URI: https://vendreo.com
