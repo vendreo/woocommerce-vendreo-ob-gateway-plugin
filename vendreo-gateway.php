@@ -1,300 +1,335 @@
 <?php
 /*
- * Plugin Name: WooCommerce Vendreo Payment Gateway
- * Plugin URI: https://docs.vendreo.com
+ * Plugin Name: WooCommerce Vendreo Payment Gateway Plugin
+ * Plugin URI: https://github.com/vendreo/woocommerce-vendreo-payment-gateway-plugin
  * Description: Take Vendreo payments on your store.
  * Author: Vendreo
- * Author URI: https://app.vendreo.com
- * Version: 1.0.0
+ * Author URI: https://vendreo.com
+ * Version: 1.1.0
  */
 
-/*
- * This action hook registers our PHP class as a WooCommerce payment gateway
+add_filter('woocommerce_payment_gateways', 'vendreo_add_gateway_class');
+add_action('plugins_loaded', 'vendreo_init_gateway_class');
+
+/**
+ * @param $gateways
+ * @return mixed
  */
-add_filter( 'woocommerce_payment_gateways', 'vendreo_add_gateway_class' );
-function vendreo_add_gateway_class( $gateways ) {
-    $gateways[] = 'WC_Vendreo_Gateway'; // your class name is here
+function vendreo_add_gateway_class($gateways)
+{
+    $gateways[] = 'WC_Vendreo_Gateway';
+
     return $gateways;
 }
 
-/*
- * The class itself, please note that it is inside plugins_loaded action hook
+/**
+ * @return void
  */
-add_action( 'plugins_loaded', 'vendreo_init_gateway_class' );
-
-
-function vendreo_init_gateway_class() {
-
-    class WC_Vendreo_Gateway extends WC_Payment_Gateway {
+function vendreo_init_gateway_class()
+{
+    class WC_Vendreo_Gateway extends WC_Payment_Gateway
+    {
+        /**
+         * @var string
+         */
+        public $id;
 
         /**
-         * Class constructor, more about it in Step 3
+         * @var string
          */
-        public function __construct() {
+        public $icon;
 
-            $this->id = 'vendreo'; // payment gateway plugin ID
-            $this->icon = 'https://app.vendreo.com/images/logo_trim.png'; // URL of the icon that will be displayed on checkout page near your gateway name
-            $this->has_fields = true; // in case you need a custom credit card form
+        /**
+         * @var bool
+         */
+        public $has_fields;
+
+        /**
+         * @var string
+         */
+        public $method_title;
+
+        /**
+         * @var string
+         */
+        public $method_description;
+
+        /**
+         * @var string[]
+         */
+        public $supports;
+
+        /**
+         * @var string
+         */
+        public $title;
+
+        /**
+         * @var string
+         */
+        public $description;
+
+        /**
+         * @var bool
+         */
+        public $enabled;
+
+        /**
+         * @var bool
+         */
+        public $testmode;
+
+        /**
+         * @var string
+         */
+        public $application_key;
+
+        /**
+         * @var string
+         */
+        public $secret_key;
+
+        /**
+         * @var array
+         */
+        public $form_fields;
+
+        public function __construct()
+        {
+            $this->id = 'vendreo';
+            $this->icon = 'https://app.vendreo.com/images/vendreo-fullcolour.svg';
+            $this->has_fields = true;
             $this->method_title = 'Fast Bank Transfer (Vendreo)';
-            $this->method_description = 'Description of Vendreo payment gateway'; // will be displayed on the options page
+            $this->method_description = 'Accept payments via bank transfer using Vendreo\'s Payment Gateway';
 
-            // gateways can support subscriptions, refunds, saved payment methods,
-            // but in this tutorial we begin with simple payments
-            $this->supports = array(
-                'products'
-            );
+            $this->supports = ['products'];
 
-            // Method with all the options fields
             $this->init_form_fields();
 
-            // Load the settings.
             $this->init_settings();
-            $this->title = $this->get_option( 'title' );
-            $this->description = $this->get_option( 'description' );
-            $this->enabled = $this->get_option( 'enabled' );
-            $this->testmode = 'yes' === $this->get_option( 'testmode' );
-            $this->application_key = $this->testmode ? $this->get_option( 'test_application_key' ) : $this->get_option( 'application_key' );
-            $this->secret_key = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
+            $this->title = $this->get_option('title');
+            $this->description = $this->get_option('description');
+            $this->enabled = $this->get_option('enabled');
+            $this->testmode = 'yes' === $this->get_option('testmode');
+            $this->application_key = $this->testmode ? $this->get_option('test_application_key') : $this->get_option('application_key');
+            $this->secret_key = $this->testmode ? $this->get_option('test_secret_key') : $this->get_option('secret_key');
 
-            // This action hook saves the settings
-            add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-
-            //Callback API Handle
-
-            add_action( 'woocommerce_api_wc_vendreo_gateway', array( $this, 'callback_handler' ) );
-
-
-            //add_action( 'woocommerce_thankyou_order_received_text', array($this, 'thankyou_page') );
-
-
-            //add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'check_response'  ));
-
-            // We need custom JavaScript to obtain a token
-            add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
-
-            //add_action( 'woocommerce_api_vendreo', array( $this, 'webhook'));
-            //add_action( 'woocommerce_api_wc_vendreo', array( $this, 'webhook' ) );
-
-
+            add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+            add_action('woocommerce_api_wc_vendreo_gateway', [$this, 'callback_handler']);
+            add_action('wp_enqueue_scripts', [$this, 'payment_scripts']);
         }
 
         /**
-         * Plugin options, we deal with it in Step 3 too
+         * Setup plugin options.
+         *
+         * @return void
          */
-        public function init_form_fields(){
-
-            $this->form_fields = array(
-                'enabled' => array(
-                    'title'       => 'Enable/Disable',
-                    'label'       => 'Enable Vendreo Gateway',
-                    'type'        => 'checkbox',
+        public function init_form_fields()
+        {
+            $this->form_fields = [
+                'enabled' => [
+                    'title' => 'Enable/Disable',
+                    'label' => 'Enable Vendreo Gateway',
+                    'type' => 'checkbox',
                     'description' => '',
-                    'default'     => 'no'
-                ),
-                'title' => array(
-                    'title'       => 'Title',
-                    'type'        => 'text',
+                    'default' => 'no'
+                ],
+                'title' => [
+                    'title' => 'Title',
+                    'type' => 'text',
                     'description' => 'This controls the title which the user sees during checkout.',
-                    'default'     => 'Fast Bank Transfer (Vendreo)',
-                    'desc_tip'    => true,
-                ),
-                'description' => array(
-                    'title'       => 'Description',
-                    'type'        => 'textarea',
+                    'default' => 'Fast Bank Transfer (Vendreo)',
+                    'desc_tip' => true,
+                ],
+                'description' => [
+                    'title' => 'Description',
+                    'type' => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
-                    'default'     => 'Pay directly from your banking app.',
-                ),
-                'testmode' => array(
-                    'title'       => 'Test mode',
-                    'label'       => 'Enable Test Mode',
-                    'type'        => 'checkbox',
+                    'default' => 'Pay directly from your banking app.',
+                ],
+                'testmode' => [
+                    'title' => 'Test mode',
+                    'label' => 'Enable Test Mode',
+                    'type' => 'checkbox',
                     'description' => 'Place the payment gateway in test mode using test API keys.',
-                    'default'     => 'yes',
-                    'desc_tip'    => true,
-                ),
-                'test_application_key' => array(
-                    'title'       => 'Test Application Key',
-                    'type'        => 'text'
-                ),
-                'test_secret_key' => array(
-                    'title'       => 'Test Secret Key',
-                    'type'        => 'password',
-                ),
-                'application_key' => array(
-                    'title'       => 'Live Application Key',
-                    'type'        => 'text'
-                ),
-                'secret_key' => array(
-                    'title'       => 'Live Secret Key',
-                    'type'        => 'password'
-                )
-            );
-
+                    'default' => 'yes',
+                    'desc_tip' => true,
+                ],
+                'test_application_key' => [
+                    'title' => 'Test Application Key',
+                    'type' => 'text'
+                ],
+                'test_secret_key' => [
+                    'title' => 'Test Secret Key',
+                    'type' => 'password',
+                ],
+                'application_key' => [
+                    'title' => 'Live Application Key',
+                    'type' => 'text'
+                ],
+                'secret_key' => [
+                    'title' => 'Live Secret Key',
+                    'type' => 'password'
+                ],
+            ];
         }
 
         /**
-         * You will need it if you want your custom credit card form, Step 4 is about it
+         * @return void
          */
-        public function payment_fields() {
-
-            //...
-
+        public function payment_fields()
+        {
         }
 
-        /*
-         * Custom CSS and JS, in most cases required only when you decided to go with a custom credit card form
+        /**
+         * @return void
          */
-        public function payment_scripts() {
-
-            //...
-
+        public function payment_scripts()
+        {
         }
 
-
-        /*
-          * Fields validation, more in Step 5
+        /**
+         * @return void
          */
-        public function validate_fields() {
-
-            //...
-
+        public function validate_fields()
+        {
         }
 
-        /*
-         * We're processing the payments here, everything about it is in Step 5
+        /**
+         * @param $order_id
+         * @return array|false
          */
-        public function process_payment( $order_id ) {
+        public function process_payment($order_id)
+        {
             global $woocommerce;
 
+            $order = wc_get_order($order_id);
 
-            // we need it to get any order detailes
-            $order = wc_get_order( $order_id );
-
-            // Mark as on-hold (we're awaiting the payment)
-            $order->update_status( 'pending-payment', __( 'Awaiting Vendreo Payment', 'wc-gateway-vendreo' ) );
-
-            // Remove cart
-            WC()->cart->empty_cart();
+            $order->update_status('pending-payment', __('Awaiting Vendreo Payment', 'wc-gateway-vendreo'));
 
             $post = [
                 'application_key' => $this->application_key,
-                'amount' => ($order->get_total() * 100),
+                'amount' => (int)($order->get_total() * 100),
                 'country_code' => 'GB',
                 'currency' => 'GBP',
                 "description" => "Order #{$order_id}",
                 'payment_type' => 'single',
                 "redirect_url" => $this->get_return_url($order),
                 "reference_id" => $order_id,
+                "basket_items" => $this->get_basket_details(),
             ];
 
-            header('Content-Type: application/json'); // Specify the type of data
-            $ch = curl_init('https://api.vendreo.com/v1/request-payment'); // Initialise cURL
-            $post = json_encode($post); // Encode the data array into a JSON string
-            $authorization = "Authorization: Bearer ".$this->secret_key; // Prepare the authorisation token
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization )); // Inject the token into the header
+            header('Content-Type: application/json');
+            $ch = curl_init('https://api.vendreo.com/v1/request-payment');
+            $authorization = "Authorization: Bearer " . $this->secret_key;
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json','Accept: application/json', $authorization]);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, 1); // Specify the request method as POST
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post); // Set the posted fields
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // This will follow any redirects
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            $result = curl_exec($ch); // Execute the cURL statement
-            curl_close($ch); // Close the cURL connection
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            if (!$result) {
+                return false;
+            }
 
             $result = json_decode($result);
 
-            return array(
-                'result'    => 'success',
-                'redirect'  => $result->redirect_url
-            );
+            WC()->cart->empty_cart();
 
-
-
+            return [
+                'result' => 'success',
+                'redirect' => $result->redirect_url
+            ];
         }
 
+        /**
+         * Returns itemised basket details.
+         *
+         * @return array[]
+         */
+        public function get_basket_details(): array
+        {
+            $basket = [];
 
+            foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+                $product = $cart_item['data'];
+
+                $basket[] = [
+                    'description' => $product->get_name(),
+                    'quantity' => $cart_item['quantity'],
+                    'price' => (int) ($product->get_price() * 100),
+                    'total' => (int)(($product->get_price() * 100) * $cart_item['quantity']),
+                ];
+            }
+
+            return $basket;
+        }
+
+        /**
+         * @return void
+         */
         public function callback_handler()
         {
             $json = file_get_contents('php://input');
             $data = json_decode($json);
 
             $order = wc_get_order($data->reference_id);
-            if ($data->act == 'payment_completed')
-            {
+
+            if ($data->act == 'payment_completed') {
                 $order->payment_complete();
                 wc_reduce_stock_levels($order->get_id());
             }
-
         }
 
         /**
-         * Add content to the WC emails.
-         *
-         * @access public
-         * @param WC_Order $order
-         * @param bool $sent_to_admin
-         * @param bool $plain_text
+         * @return void
          */
-        /*public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-
-            if ( $this->instructions && ! $sent_to_admin && 'offline' === $order->payment_method && $order->has_status( 'on-hold' ) ) {
-                echo wpautop( wptexturize( $this->instructions ) ) . PHP_EOL;
-            }
-        }*/
-
-
         public function check_response()
         {
-
         }
-        /*
-         * In case you need a webhook, like PayPal IPN etc
-         *
+
+        /**
+         * @return void
          */
-        public function webhook() {
-
-           // $order = wc_get_order(wc_get_order_id_by_order_key( $_GET['key']));
-
+        public function webhook()
+        {
             echo "TEST";
-            //$order->update_status( 'on-hold', __( 'Awaiting Vendreo Payment Confirmation', 'wc-gateway-vendreo' ) );
-
-            //var_dump($order);
-
-            //ray($order);
-            //$order->payment_complete();
-            //$order->reduce_order_stock();
-
-            //update_option('webhook_debug', $_GET);
-//
         }
-    }
-
-    function at_rest_testing_endpoint()
-    {
-
-        global $woocommerce;
-
-        $order = wc_get_order(wc_get_order_id_by_order_key($_GET['key']));
-        $order->update_status( 'on-hold', __( 'Awaiting Vendreo Payment Confirmation', 'wc-gateway-vendreo' ) );
-
-        return wp_redirect($order->get_checkout_order_received_url());
-
-        //return new WP_REST_Response('Howdy!!');
     }
 
     /**
-     * at_rest_init
+     * @return mixed
+     */
+    function at_rest_testing_endpoint()
+    {
+        global $woocommerce;
+
+        $order = wc_get_order(wc_get_order_id_by_order_key($_GET['key']));
+        $order->update_status('on-hold', __('Awaiting Vendreo Payment Confirmation', 'wc-gateway-vendreo'));
+
+        return wp_redirect($order->get_checkout_order_received_url());
+    }
+
+    /**
+     * @return void
      */
     function at_rest_init()
     {
-        // route url: domain.com/wp-json/$namespace/$route
         $namespace = 'vendreo/v1';
-        $route     = 'postback';
+        $route = 'postback';
 
-        register_rest_route($namespace, $route, array(
-            'methods'   => WP_REST_Server::READABLE,
-            'callback'  => 'at_rest_testing_endpoint'
-        ));
+        register_rest_route(
+            $namespace,
+            $route,
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => 'at_rest_testing_endpoint'
+            ]
+        );
     }
 
     add_action('rest_api_init', 'at_rest_init');
