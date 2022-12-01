@@ -26,6 +26,11 @@ For instructions, setup and configuration information please refer to the WooCom
 ## Changelog
 As documented here [Keep A Change Log](https://keepachangelog.com/en/1.0.0/).
 
+### [1.1.1] - 01-12-2022
+
+#### Added
+- 200 response code check.
+
 ### [1.1.0] - 01-12-2022
 
 #### Added

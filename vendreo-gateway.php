@@ -5,7 +5,7 @@
  * Description: Take Vendreo payments on your store.
  * Author: Vendreo
  * Author URI: https://vendreo.com
- * Version: 1.1.0
+ * Version: 1.1.1
  */
 
 add_filter('woocommerce_payment_gateways', 'vendreo_add_gateway_class');
@@ -229,10 +229,12 @@ function vendreo_init_gateway_class()
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
             $result = curl_exec($ch);
+            $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            if (!$result) {
+            if ($responseCode <> 200 || !$result) {
                 return false;
             }
 
