@@ -2,10 +2,10 @@
 /*
  * Plugin Name: WooCommerce Vendreo Payment Gateway Plugin
  * Plugin URI: https://github.com/vendreo/woocommerce-vendreo-payment-gateway-plugin
- * Description: Take Vendreo payments on your store.
+ * Description: Take Vendreo payments in your store.
  * Author: Vendreo
  * Author URI: https://vendreo.com
- * Version: 1.1.1
+ * Version: 1.2.0
  */
 
 add_filter('woocommerce_payment_gateways', 'vendreo_add_gateway_class');
@@ -281,7 +281,7 @@ function vendreo_init_gateway_class()
 
             $order = wc_get_order($data->reference_id);
 
-            if ($data->act == 'payment_completed') {
+            if ($data->act == 'payment_completed' || $data->act == 'card_payment_completed') {
                 $order->payment_complete();
                 wc_reduce_stock_levels($order->get_id());
             }

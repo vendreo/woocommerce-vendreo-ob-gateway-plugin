@@ -7,7 +7,7 @@
 
 
 ### Description
-Vendreo's latest payment solution. Accept online payments in your WooCommerce store via the Open Banking API, safe and secure.
+Vendreo's latest payment solution offers both safe and secure processing of Card & Open Banking payments. 
 
 ### Requirements
 
@@ -25,6 +25,12 @@ For instructions, setup and configuration information please refer to the WooCom
 
 ## Changelog
 As documented here [Keep A Change Log](https://keepachangelog.com/en/1.0.0/).
+
+### [1.2.0] - 01-12-2022
+
+#### Added
+- Ability to process card payments.
+
 
 ### [1.1.1] - 01-12-2022
 
