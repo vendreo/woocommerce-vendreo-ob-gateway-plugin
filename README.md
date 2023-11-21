@@ -7,7 +7,7 @@
 
 
 ### Description
-Vendreo's latest payment solution offers both safe and secure processing of Card & Open Banking payments. 
+Vendreo's latest payment solution offers safe, secure processing of Card & Open Banking payments. 
 
 ### Requirements
 
