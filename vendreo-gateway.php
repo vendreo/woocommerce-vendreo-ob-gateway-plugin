@@ -97,10 +97,10 @@ function vendreo_init_gateway_class()
         public function __construct()
         {
             $this->id = 'vendreo';
-            $this->icon = 'https://app.vendreo.com/images/vendreo-fullcolour.svg';
+            $this->icon = 'https://cdn.vendreo.com/images/vendreo-fullcolour.svg';
             $this->has_fields = true;
-            $this->method_title = 'Fast Bank Transfer (Vendreo)';
-            $this->method_description = 'Accept payments via bank transfer using Vendreo\'s Payment Gateway';
+            $this->method_title = 'Pay with Vendreo';
+            $this->method_description = 'Accept payments via card or bank transfer using Vendreo\'s Payment Gateway';
 
             $this->supports = ['products'];
 
@@ -138,14 +138,14 @@ function vendreo_init_gateway_class()
                     'title' => 'Title',
                     'type' => 'text',
                     'description' => 'This controls the title which the user sees during checkout.',
-                    'default' => 'Fast Bank Transfer (Vendreo)',
+                    'default' => 'Pay with Vendreo',
                     'desc_tip' => true,
                 ],
                 'description' => [
                     'title' => 'Description',
                     'type' => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
-                    'default' => 'Pay directly from your banking app.',
+                    'default' => 'Make safe, simple payments using Vendreo.',
                 ],
                 'testmode' => [
                     'title' => 'Test mode',
