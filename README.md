@@ -2,7 +2,7 @@
     <img src="https://cdn.vendreo.com/images/vendreo-fullcolour.svg" width="270" height="auto">
 </p>
 
-# WooCommerce Vendreo Payment Gateway Plugin
+# WooCommerce Vendreo OB Gateway Plugin
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![PHP 7.2](https://img.shields.io/badge/PHP-7.2-blue.svg)
