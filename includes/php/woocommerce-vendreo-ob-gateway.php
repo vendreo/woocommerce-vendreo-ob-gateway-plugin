@@ -2,8 +2,7 @@
 
 class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
 {
-    //todo change to production
-    protected $url = 'https://api.vendreo-test.com/v1/request-payment';
+    protected $url = 'https://api.vendreo.com/v1/request-payment';
     protected $testmode;
     protected $application_key;
     protected $secret_key;
@@ -12,6 +11,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
     {
         $this->id = 'woocommerce_vendreo_ob_gateway';
         $this->method_title = __('WooCommerce Vendreo Gateway (Open Banking)', 'woocommerce-vendreo-ob-gateway');
+        $this->title = 'Vendreo (Open Banking)';
 
         $this->method_description = __('Accept bank transfer payments using Vendreo\'s Payment Gateway.', 'woocommerce-vendreo-ob-gateway');
         $this->icon = 'https://cdn.vendreo.com/images/vendreo-fullcolour.svg';
@@ -93,6 +93,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
             "description" => "Order #{$order_id}",
             'payment_type' => 'single',
             "redirect_url" => $this->get_return_url($order),
+            'failed_url' => $this->get_cancelled_url(),
             "reference_id" => $order_id,
             "basket_items" => $this->get_basket_details(),
         ];
@@ -164,7 +165,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
         }
 
         if($data->act === 'payment_failed'){
-            $order->update_status('failed-payment', __('Vendreo Open Banking Payment Failed', 'woocommerce-vendreo-ob-gateway'));
+            $order->update_status('failed', __('Vendreo Open Banking Payment Failed', 'woocommerce-vendreo-ob-gateway'));
         }
     }
 }
