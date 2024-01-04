@@ -2,6 +2,7 @@
 
 class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
 {
+    //todo change to production
     protected $url = 'https://api.vendreo-test.com/v1/request-payment';
     protected $testmode;
     protected $application_key;
@@ -49,7 +50,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
                 'title' => 'Description',
                 'type' => 'textarea',
                 'description' => 'This controls the description which the user sees during checkout.',
-                'default' => 'Pay safe and secure via Open Banking transfer.',
+                'default' => 'Pay directly from your banking app.',
             ],
             'testmode' => [
                 'title' => 'Test mode',
@@ -87,21 +88,13 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
         $post = [
             'application_key' => $this->application_key,
             'amount' => (int)($order->get_total() * 100),
+            'country_code' => 'GB',
             'currency' => 'GBP',
             "description" => "Order #{$order_id}",
-            'payment_type' => 'dynamic-one-off',
+            'payment_type' => 'single',
             "redirect_url" => $this->get_return_url($order),
-            'failed_url' => $this->get_cancelled_url(),
             "reference_id" => $order_id,
             "basket_items" => $this->get_basket_details(),
-            'order_reference' => 'TM-ORDER_#' . $order_id . '|' . wp_generate_password(5, false, false),
-            'mandate_3ds_challenge' => true,
-            'enable_address_field' => true,
-            'customer_billing_email' => $order->get_billing_email(),
-            'customer_billing_address' => $order->get_billing_address_1(),
-            'customer_billing_town' => $order->get_billing_city(),
-            'customer_billing_post_code' => $order->get_billing_postcode(),
-            'country_code' => 'GB',
         ];
 
         header('Content-Type: application/json');
