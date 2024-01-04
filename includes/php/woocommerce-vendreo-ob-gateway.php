@@ -24,7 +24,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
         $this->application_key = $this->testmode ? $this->get_option('test_application_key') : $this->get_option('application_key');
         $this->secret_key = $this->testmode ? $this->get_option('test_secret_key') : $this->get_option('secret_key');
 
-        add_action('woocommerce_api_card_callback', [$this, 'callback_handler']);
+        add_action('woocommerce_api_ob_callback', [$this, 'callback_handler']);
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
     }
 
