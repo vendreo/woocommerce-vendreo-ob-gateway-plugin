@@ -23,7 +23,7 @@ Vendreo's latest payment solution. Accept online payments in your WooCommerce st
 
 ### Requirements
 
-To install the Vendreo Card Gateway plugin, you need:
+To install the WooCommerce Vendreo OB Gateway Plugin, you need:
 
 * WordPress Version 6.1.1 or newer (installed).
 * WooCommerce Version 6.9 or newer (installed and activated).
