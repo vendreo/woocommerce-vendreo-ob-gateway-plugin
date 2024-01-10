@@ -28,7 +28,7 @@ For instructions, setup and configuration information please refer to the WooCom
 
 = Why are my orders not being marked as paid? =
 
-Ensure that the callback endpoint is working by visiting `https://your-site.com/wc-api/card_callback` in your browser.
+Ensure that the callback endpoint is working by visiting `https://your-site.com/wc-api/ob_callback` in your browser.
 You should see `-1` shown with a 200 response code.
 
 If not, this can be caused by permalinks automatically adding a slash to the end of the url.
