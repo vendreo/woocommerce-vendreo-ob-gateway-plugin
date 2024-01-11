@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: WooCommerce Vendreo OB Gateway Plugin
+Plugin Name: Vendreo Open Banking Gateway
 Plugin URI: https://github.com/vendreo/woocommerce-vendreo-ob-gateway-plugin
 Description: Accept bank transfer payments using Vendreo's Payment Gateway.
 Version: 1.2.1
@@ -14,7 +14,7 @@ Requires at least WooCommerce: 6.9
 Tested on WooCommerce up to: 8.4.0
 Tested on PHP: 7.4 & 8.0
 Stable tag: 1.2.1
-Text Domain: woocommerce-vendreo-ob-gateway
+Text Domain: vendreo-open-banking-gateway
 Domain Path: /languages
 */
 
@@ -29,7 +29,7 @@ function woocommerce_vendreo_ob_plugin()
     if (!class_exists('WC_Payment_Gateway'))
         return;
 
-    include(plugin_dir_path(__FILE__) . 'includes/php/woocommerce-vendreo-ob-gateway.php');
+    include(plugin_dir_path(__FILE__) . 'includes/php/vendreo-open-banking-gateway.php');
 }
 
 add_filter('woocommerce_payment_gateways', 'add_woocommerce_vendreo_ob_gateway');
