@@ -9,10 +9,10 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway {
 
 	public function __construct() {
 		$this->id           = 'woocommerce_vendreo_ob_gateway';
-		$this->method_title = __( 'Vendreo Gateway (Open Banking)', 'vendreo-ob-gateway' );
+		$this->method_title = __( 'Vendreo Gateway (Open Banking)', 'vendreo-open-banking-gateway' );
 		$this->title        = 'Vendreo (Open Banking)';
 
-		$this->method_description = __( 'Accept bank transfer payments using Vendreo\'s Payment Gateway.', 'vendreo-ob-gateway' );
+		$this->method_description = __( 'Accept bank transfer payments using Vendreo\'s Payment Gateway.', 'vendreo-open-banking-gateway' );
 
 		$this->supports = [ 'products' ];
 
@@ -79,7 +79,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 
-		$order->update_status( 'pending-payment', __( 'Awaiting Vendreo Open Banking Transfer Payment', 'vendreo-ob-gateway' ) );
+		$order->update_status( 'pending-payment', __( 'Awaiting Vendreo Open Banking Transfer Payment', 'vendreo-open-banking-gateway' ) );
 
 		$post = [
 			'application_key' => $this->application_key,
@@ -161,7 +161,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway {
 		}
 
 		if ( 'payment_failed' === $data->act ) {
-			$order->update_status( 'failed', __( 'Vendreo Open Banking Payment Failed', 'vendreo-ob-gateway' ) );
+			$order->update_status( 'failed', __( 'Vendreo Open Banking Payment Failed', 'vendreo-open-banking-gateway' ) );
 		}
 	}
 }
