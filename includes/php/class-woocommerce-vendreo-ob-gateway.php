@@ -10,11 +10,10 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
     public function __construct()
     {
         $this->id = 'woocommerce_vendreo_ob_gateway';
-        $this->method_title = __('WooCommerce Vendreo Gateway (Open Banking)', 'woocommerce-vendreo-ob-gateway');
+        $this->method_title = __('Vendreo Gateway (Open Banking)', 'vendreo-ob-gateway');
         $this->title = 'Vendreo (Open Banking)';
 
         $this->method_description = __('Accept bank transfer payments using Vendreo\'s Payment Gateway.', 'woocommerce-vendreo-ob-gateway');
-        $this->icon = 'https://cdn.vendreo.com/images/vendreo-fullcolour.svg';
 
         $this->supports = ['products'];
 
@@ -50,7 +49,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
                 'title' => 'Description',
                 'type' => 'textarea',
                 'description' => 'This controls the description which the user sees during checkout.',
-                'default' => 'Pay directly from your banking app.',
+                'default' => 'Pay safe and secure directly from your banking app.',
             ],
             'testmode' => [
                 'title' => 'Test mode',
@@ -83,7 +82,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
     {
         $order = wc_get_order($order_id);
 
-        $order->update_status('pending-payment', __('Awaiting Vendreo Open Banking Transfer Payment', 'woocommerce-vendreo-ob-gateway'));
+        $order->update_status('pending-payment', __('Awaiting Vendreo Open Banking Transfer Payment', 'vendreo-ob-gateway'));
 
         $post = [
             'application_key' => $this->application_key,
@@ -165,7 +164,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway
         }
 
         if($data->act === 'payment_failed'){
-            $order->update_status('failed', __('Vendreo Open Banking Payment Failed', 'woocommerce-vendreo-ob-gateway'));
+            $order->update_status('failed', __('Vendreo Open Banking Payment Failed', 'vendreo-ob-gateway'));
         }
     }
 }
