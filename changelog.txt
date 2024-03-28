@@ -37,4 +37,4 @@
 * [Remove] - Remove unneeded zip file.
 
 2022-06-14 - version 1.0.0
-* [Add] - Card gateway plugin released.
+* [Add] - Gateway plugin released.

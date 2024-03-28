@@ -44,7 +44,7 @@ Try resolving this by:
 
 == Screenshots ==
 
-1. The Vendreo Card Gateway setting page.
+1. The Vendreo Open Banking Gateway setting page.
 
 == Changelog ==
 
