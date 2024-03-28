@@ -1,0 +1,32 @@
+{
+  "name": "woocommerce-vendreo-open-banking-gateway-plugin",
+  "title": "Woocommerce Vendreo Open Banking Gateway Plugin",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vendreo/woocommerce-vendreo-ob-gateway-plugin.git"
+  },
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "^17.5.0",
+    "eslint": "^8.56.0",
+    "lint-staged": "11.1.2",
+    "stylelint": "^16.1.0"
+  },
+  "engines": {
+    "node": ">=16.17.0",
+    "npm": ">=8.15.0"
+  },
+  "config": {
+    "wp_org_slug": "vendreo-ob-gateway",
+    "version_replace_paths": [
+      "includes",
+      "templates",
+      "vendreo-ob-gateway.php"
+    ]
+  },
+  "scripts": {
+    "lint:js": "eslint . --ext=js",
+    "lint:css": "stylelint 'assets/**/*.css'"
+  }
+}
