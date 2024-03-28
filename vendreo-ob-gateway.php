@@ -18,52 +18,49 @@ use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 define( 'VENDREO_OB_PLUGIN_DIR_PATH', plugins_url( '', __FILE__ ) );
 
-add_action('plugins_loaded', 'vendreo_ob_woocommerce_plugin', 0);
+add_action( 'plugins_loaded', 'vendreo_ob_woocommerce_plugin', 0 );
 
-function vendreo_ob_woocommerce_plugin()
-{
-    if (!class_exists('WC_Payment_Gateway'))
-        return;
+function vendreo_ob_woocommerce_plugin() {
+	if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
+		return;
+	}
 
-    include(plugin_dir_path(__FILE__) . 'includes/php/class-woocommerce-vendreo-ob-gateway.php');
+	include plugin_dir_path( __FILE__ ) . 'includes/php/class-woocommerce-vendreo-ob-gateway.php';
 }
 
-add_filter('woocommerce_payment_gateways', 'vendreo_ob_add_woocommerce_gateway');
+add_filter( 'woocommerce_payment_gateways', 'vendreo_ob_add_woocommerce_gateway' );
 
-function vendreo_ob_add_woocommerce_gateway($gateways)
-{
-    $gateways[] = 'WooCommerce_Vendreo_OB_Gateway';
-    return $gateways;
+function vendreo_ob_add_woocommerce_gateway( $gateways ) {
+	$gateways[] = 'WooCommerce_Vendreo_OB_Gateway';
+	return $gateways;
 }
 
 /**
  * Custom function to declare compatibility with cart_checkout_blocks feature
  */
-function vendreo_ob_declare_ob_cart_checkout_blocks_compatibility()
-{
-    if (class_exists(FeaturesUtil::class)) {
-        FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
-    }
+function vendreo_ob_declare_ob_cart_checkout_blocks_compatibility() {
+	if ( class_exists( FeaturesUtil::class ) ) {
+		FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
+	}
 }
 
-add_action('before_woocommerce_init', 'vendreo_ob_declare_ob_cart_checkout_blocks_compatibility');
-add_action('woocommerce_blocks_loaded', 'vendreo_ob_register_order_approval_payment_method_type');
+add_action( 'before_woocommerce_init', 'vendreo_ob_declare_ob_cart_checkout_blocks_compatibility' );
+add_action( 'woocommerce_blocks_loaded', 'vendreo_ob_register_order_approval_payment_method_type' );
 
 /**
  * Custom function to register a payment method type
  */
-function vendreo_ob_register_order_approval_payment_method_type()
-{
-    if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
-        return;
-    }
+function vendreo_ob_register_order_approval_payment_method_type() {
+	if ( ! class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+		return;
+	}
 
-    require_once plugin_dir_path(__FILE__) . 'includes/php/class-vendreo-ob-gateway-blocks.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/php/class-vendreo-ob-gateway-blocks.php';
 
-    add_action(
-        'woocommerce_blocks_payment_method_type_registration',
-        function (Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
-            $payment_method_registry->register(new Vendreo_OB_Gateway_Blocks());
-        }
-    );
+	add_action(
+		'woocommerce_blocks_payment_method_type_registration',
+		function ( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+			$payment_method_registry->register( new Vendreo_OB_Gateway_Blocks() );
+		}
+	);
 }
