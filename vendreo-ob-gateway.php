@@ -3,7 +3,7 @@
  * Plugin Name:       Vendreo OB Gateway
  * Plugin URI:        https://github.com/vendreo/woocommerce-vendreo-ob-gateway-plugin
  * Description:       Accept bank transfer payments using Vendreo's Payment Gateway.
- * Version:           1.2.1
+ * Version:           2.0.0
  * Requires at least: 6.1.1
  * Requires PHP:      7.2
  * Author:            Vendreo

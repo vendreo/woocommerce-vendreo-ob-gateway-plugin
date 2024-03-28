@@ -3,7 +3,7 @@ Contributors: vendreo
 Tags: woocommerce, open-banking, payment-gateway, payment-processing
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.0.7
+Stable tag: 2.0.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -48,8 +48,15 @@ Try resolving this by:
 
 == Changelog ==
 
-= 2024-03-04 - version 1.0.7 =
-* [Update] - Fix plugin images.
+= 2024-03-28 - version 2.0.0 =
+* [Update] - Replaced json_encode calls with wp_json_encode().
+* [Remove] - Removed Update URI: from header.
+* [Add] - Added in GitHub Action supporting files for code linting checks.
+* [Update] - Replaced Curl calls with wp_remote_post().
+* [Update] - Renamed woocommerce-vendreo-ob-gateway.php to vendreo-ob-gateway.php.
+* [Update] - Renamed /includes/php/woocommerce-vendreo-ob-block.php to /includes/php/class-vendreo-ob-gateway-blocks.php.
+* [Update] - Renamed /includes/php/woocommerce-vendreo-ob-gateway.php to /includes/php/class-woocommerce-vendreo-ob-gateway.php.
+* [Tweak] - ReadMe file changes.
 
 [See changelog for all versions](https://raw.githubusercontent.com/vendreo/woocommerce-vendreo-ob-gateway-plugin/main/changelog.txt).
 
