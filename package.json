@@ -18,7 +18,7 @@
     "npm": ">=8.15.0"
   },
   "config": {
-    "wp_org_slug": "vendreo-ob-gateway",
+    "wp_org_slug": "vendreo-open-banking-gateway",
     "version_replace_paths": [
       "includes",
       "templates",
