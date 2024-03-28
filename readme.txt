@@ -1,4 +1,4 @@
-=== Vendreo Card Gateway ===
+=== Vendreo Open Banking Gateway ===
 Contributors: vendreo
 Tags: woocommerce, open-banking, payment-gateway, payment-processing
 Requires at least: 6.1
