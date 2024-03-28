@@ -12,7 +12,7 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway {
 		$this->method_title = __( 'Vendreo Gateway (Open Banking)', 'vendreo-ob-gateway' );
 		$this->title        = 'Vendreo (Open Banking)';
 
-		$this->method_description = __( 'Accept bank transfer payments using Vendreo\'s Payment Gateway.', 'woocommerce-vendreo-ob-gateway' );
+		$this->method_description = __( 'Accept bank transfer payments using Vendreo\'s Payment Gateway.', 'vendreo-ob-gateway' );
 
 		$this->supports = [ 'products' ];
 
@@ -94,24 +94,27 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway {
 			'basket_items'    => $this->get_basket_details(),
 		];
 
-		header( 'Content-Type: application/json' );
-		$ch            = curl_init( $this->url );
-		$authorization = 'Authorization: Bearer ' . $this->secret_key;
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, [ 'Content-Type: application/json', 'Accept: application/json', $authorization ] );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_POST, 1 );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $post ) );
-		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+		$response = wp_remote_post(
+			$this->url,
+			[
+				'method'      => 'POST',
+				'headers'     => [
+					'Content-Type'  => 'application/json',
+					'Accept'        => 'application/json',
+					'Authorization' => 'Bearer ' . $this->secret_key,
+				],
+				'redirection' => 5,
+				'httpversion' => '1.0',
+				'timeout'     => 45,
+				'body'        => wp_json_encode( $post ),
+			]
+		);
 
-		$result       = curl_exec( $ch );
-		$responseCode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-		curl_close( $ch );
-
-		if ( $responseCode <> 200 || ! $result ) {
+		if ( is_wp_error( $response ) ) {
 			return false;
 		}
 
-		$result = json_decode( $result );
+		$result = json_decode( $response['body'] );
 
 		return [
 			'result'   => 'success',
@@ -146,18 +149,18 @@ class WooCommerce_Vendreo_OB_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function callback_handler() {
-		$json    = file_get_contents( 'php://input' );
-		$data    = json_decode( $json );
-		$orderId = explode( '|', $data->reference_id )[0];
+		$json     = file_get_contents( 'php://input' );
+		$data     = json_decode( $json );
+		$order_id = explode( '|', $data->reference_id )[0];
 
-		$order = wc_get_order( $orderId );
+		$order = wc_get_order( $order_id );
 
-		if ( $data->act === 'payment_completed' ) {
+		if ( 'payment_completed' === $data->act ) {
 			$order->payment_complete();
 			wc_reduce_stock_levels( $order->get_id() );
 		}
 
-		if ( $data->act === 'payment_failed' ) {
+		if ( 'payment_failed' === $data->act ) {
 			$order->update_status( 'failed', __( 'Vendreo Open Banking Payment Failed', 'vendreo-ob-gateway' ) );
 		}
 	}
