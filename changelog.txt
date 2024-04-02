@@ -1,0 +1,40 @@
+*** Vendreo Open Banking Gateway Changelog ***
+
+2024-03-28 - version 2.0.0
+* [Add] - Added in GitHub Action supporting files for code linting checks.
+* [Add] - ReadMe.txt.
+* [Update] - Replaced json_encode calls with wp_json_encode().
+* [Update] - Replaced Curl calls with wp_remote_post().
+* [Update] - Renamed woocommerce-vendreo-ob-gateway.php to vendreo-ob-gateway.php.
+* [Update] - Renamed /includes/php/woocommerce-vendreo-ob-block.php to /includes/php/class-vendreo-ob-gateway-blocks.php.
+* [Update] - Renamed /includes/php/woocommerce-vendreo-ob-gateway.php to /includes/php/class-woocommerce-vendreo-ob-gateway.php.
+* [Tweak] - ReadMe file changes.
+* [Remove] - Removed Update URI: from header.
+
+2023-01-10 - version 1.2.1
+* [Update] - License change to GPLv3.
+
+2023-01-04 - version 1.2.0
+* [Add] - Integrates with WooCommerce checkout blocks.
+
+2022-12-01 - version 1.1.1
+* [Add] - HTTP status code check for the response back from the API.
+
+2022-12-01 - version 1.1.0
+* [Add] - LICENSE.txt.
+* [Add] - Doc blocks to vendreo-gateway.php to help improve code readability.
+* [Add] - Class variables to make code more explicit within vendreo-gateway.php file.
+* [Update] - vendreo-gateway.php file by adding basket_items key to POST data (using data from the new get_basket_details() method).
+* [Update] - README.md updated to contain useful project information such as dependency versions, instructional and the Changelog.
+* [Update] - Clearing of basket to be applied only upon successful checkout in vendreo-gateway.php file.
+* [Update] - Converted array() calls to[] in vendreo-gateway.php file.
+* [Update] - Curl request in vendreo-gateway.php file to match new API endpoint requirements.
+
+2022-06-15 - version 1.0.2
+* [Remove] - Move folders.
+
+2022-06-14 - version 1.0.1
+* [Remove] - Remove unneeded zip file.
+
+2022-06-14 - version 1.0.0
+* [Add] - Gateway plugin released.
